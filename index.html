@@ -70,6 +70,72 @@
       display: block;
     }
 
+    /* =========================================
+       【新加入】螢火蟲/粒子效果區塊
+       ========================================= */
+
+    /* 鎖定 Logo 圖片 */
+    .particle-effect {
+      /* Logo 本身加點光暈 */
+      filter: drop-shadow(0 0 5px var(--neon-green));
+    }
+
+    /* 創造兩個偽元素作為粒子的載體 */
+    .particle-effect::before,
+    .particle-effect::after {
+      content: '';
+      position: absolute;
+      /* 讓偽元素和 Logo 一樣大 */
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+
+      /* 確保在 Logo 上方 */
+      z-index: 1;
+
+      /* 確保不影響 Logo 點擊 */
+      pointer-events: none;
+
+      /* === 🌟 粒子顏色和大小調整區 🌟 === */
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.5),
+        /* 霓虹綠內光 */
+        0 0 25px rgba(138, 43, 226, 0.3);
+      /* 電光紫外擴 */
+
+      /* 啟動動畫 (請見下方的 @keyframes) */
+      animation: particlePulse 3s ease-in-out infinite alternate;
+      /* 參數：3s 控制速度 */
+    }
+
+    /* 稍微錯開第二個光暈的動畫，增加不規則感和層次感 */
+    .particle-effect::after {
+      animation-delay: 1.5s;
+      /* 參數：錯開 1.5 秒啟動 */
+    }
+
+    /* 關鍵影格動畫：模擬光芒的呼吸與移動 */
+    @keyframes particlePulse {
+      0% {
+        transform: scale(1.0);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.05);
+        /* 參數：控制粒子向外擴張的幅度 */
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.0);
+        opacity: 0.8;
+      }
+    }
+
+    /* -------------------------------------- */
+
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -270,7 +336,7 @@
 
   <header>
     <div class="logo-container">
-      <img src="Images/logo-snekgame.png" alt="SnekGame Logo" class="logo-img">
+      <img src="Images/logo-snekgame.png" alt="SnekGame Logo" class="logo-img particle-effect">
     </div>
     <div class="header-actions">
       <a href="#" class="btn-connect-wallet">
