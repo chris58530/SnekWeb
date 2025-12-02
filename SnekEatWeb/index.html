@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>SnekGame - Web3 Portal</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* --- CSS 變數 --- */
+    :root {
+      --neon-green: #00FF00;
+      --electric-purple: #8A2BE2;
+      --bg-dark: #000000;
+      --text-white: #FFFFFF;
+      --header-height: 100px;
+      --nav-height: 50px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      color: white;
+    }
+
+    /* ================= 1. Header ================= */
+    header {
+      width: 100%;
+      height: var(--header-height);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 40px;
+      z-index: 10;
+      background-color: #111;
+
+      /* --- 修正：確認使用 .png --- */
+      background-image: url('images/bg-header.png');
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .logo-container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .logo-img {
+      height: 70px;
+      width: auto;
+      display: block;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-connect-wallet {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--electric-purple);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: 2px solid #a64dff;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+    }
+
+    .btn-connect-wallet:hover {
+      background-color: #9d4eff;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+    }
+
+    .icon-wallet {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* 修正：加入濾鏡讓黑色 PNG 變白色 (如果你的圖是黑色的話) */
+    /* 如果你的地球儀本身就是白色的，可以把 filter: invert(100%); 拿掉 */
+    .icon-globe {
+      width: 24px;
+      height: 24px;
+      filter: invert(100%);
+      cursor: pointer;
+    }
+
+
+    /* ================= 2. Navigation ================= */
+    nav {
+      width: 100%;
+      height: var(--nav-height);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-top: 1px solid var(--neon-green);
+      border-bottom: 1px solid var(--neon-green);
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      z-index: 9;
+    }
+
+    /* 導航按鈕樣式 */
+    .nav-btn {
+      color: #aaaaaa;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: white;
+      text-shadow: 0 0 8px var(--neon-green);
+    }
+
+    /* 被選中的按鈕下面多一條線 */
+    .nav-btn.active {
+      border-bottom: 2px solid var(--neon-green);
+    }
+
+
+    /* ================= 3. Main Content Area ================= */
+    main {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      background-color: #050505;
+
+      /* --- 修正：確認使用 .png --- */
+      background-image: url('images/bg-body.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      /* 讓內容置中 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+      /* 如果內容太長可以捲動 */
+    }
+
+    /* 隱藏區塊的 Class */
+    .section-content {
+      display: none;
+      /* 預設全部隱藏 */
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    /* 顯示區塊的 Class */
+    .section-content.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- 頁面內容樣式 (假資料用) --- */
+    .content-box {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--neon-green);
+      border-radius: 10px;
+      padding: 40px;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+    }
+
+    h2 {
+      color: var(--neon-green);
+      font-family: 'Fredoka One', cursive;
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    /* 排行榜表格 */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      color: white;
+    }
+
+    .leaderboard-table th {
+      border-bottom: 2px solid var(--electric-purple);
+      padding: 10px;
+      color: var(--electric-purple);
+    }
+
+    .leaderboard-table td {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+    }
+
+    .rank-1 {
+      color: gold;
+      font-weight: bold;
+    }
+
+    /* Unity Canvas 樣式 (Game 頁面) */
+    #unity-canvas {
+      width: 1920px;
+      height: 1080px;
+      max-width: 90%;
+      max-height: 80vh;
+      aspect-ratio: 16/9;
+      border: 2px solid #00ccff;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #004cff;
+      background: #231F20;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="images/logo-snekgame.png" alt="SnekGame Logo" class="logo-img">
+    </div>
+    <div class="header-actions">
+      <a href="#" class="btn-connect-wallet">
+        <img src="images/icon-wallet.png" alt="" class="icon-wallet">
+        <span>Connect Wallet</span>
+      </a>
+      <div class="lang-switch">
+        <img src="images/icon-globe.png" alt="Language" class="icon-globe">
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('menu')">Menu</button>
+    <button class="nav-btn" onclick="switchTab('game')">Game</button>
+    <button class="nav-btn" onclick="switchTab('leaderboard')">Leaderboard</button>
+    <button class="nav-btn" onclick="switchTab('contact')">Contact</button>
+  </nav>
+
+  <main>
+
+    <div id="section-menu" class="section-content active">
+      <div class="content-box">
+        <h2>Welcome to SnekGame</h2>
+        <p>The ultimate Web3 Snake experience. Earn tokens, compete for the crown, and own your snek!</p>
+        <br>
+        <button class="btn-connect-wallet" onclick="switchTab('game')" style="margin: 0 auto;">Play Now</button>
+      </div>
+    </div>
+
+    <div id="section-game" class="section-content">
+      <canvas id="unity-canvas" tabindex="-1"></canvas>
+    </div>
+
+    <div id="section-leaderboard" class="section-content">
+      <div class="content-box">
+        <h2>Top Sneks</h2>
+        <table class="leaderboard-table">
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+            <th>Reward</th>
+          </tr>
+          <tr>
+            <td class="rank-1">1</td>
+            <td>SnekKing_99</td>
+            <td>9,999</td>
+            <td>500 Snek</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>CryptoViper</td>
+            <td>8,540</td>
+            <td>250 Snek</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>BlockMamba</td>
+            <td>7,200</td>
+            <td>100 Snek</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>NoobSnek</td>
+            <td>6,800</td>
+            <td>50 Snek</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div id="section-contact" class="section-content">
+      <div class="content-box">
+        <h2>Contact Us</h2>
+        <p>Found a bug? Want to partner with us?</p>
+        <p style="color: var(--neon-green); font-weight: bold;">thisistest@snekgame.fun</p>
+        <br>
+        <p>Join our Discord & Twitter for updates!</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="Build/SnekEatWeb.loader.js"></script>
+  <script>
+    // --- 頁面切換邏輯 ---
+    function switchTab(tabName) {
+      // 1. 移除所有導航按鈕的 active 樣式
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      // 2. 隱藏所有內容區塊
+      document.querySelectorAll('.section-content').forEach(section => section.classList.remove('active'));
+
+      // 3. 根據點擊的名稱，顯示對應區塊 & 點亮按鈕
+      const buttons = document.querySelectorAll('.nav-btn');
+      if (tabName === 'menu') {
+        buttons[0].classList.add('active');
+        document.getElementById('section-menu').classList.add('active');
+      } else if (tabName === 'game') {
+        buttons[1].classList.add('active');
+        document.getElementById('section-game').classList.add('active');
+        // 可以在這裡加一行 code 讓遊戲取得焦點
+        document.getElementById('unity-canvas').focus();
+      } else if (tabName === 'leaderboard') {
+        buttons[2].classList.add('active');
+        document.getElementById('section-leaderboard').classList.add('active');
+      } else if (tabName === 'contact') {
+        buttons[3].classList.add('active');
+        document.getElementById('section-contact').classList.add('active');
+      }
+    }
+
+    // --- Unity 啟動邏輯 ---
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+
+      var canvas = document.querySelector("#unity-canvas");
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.border = "none";
+      canvas.style.borderRadius = "0";
+      canvas.style.boxShadow = "none";
+    }
+
+    createUnityInstance(document.querySelector("#unity-canvas"), {
+      arguments: [],
+      dataUrl: "Build/SnekEatWeb.data",
+      frameworkUrl: "Build/SnekEatWeb.framework.js",
+      codeUrl: "Build/SnekEatWeb.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "SnekEat Web",
+      productVersion: "0.1.0",
+    });
+  </script>
+
+</body>
+
+</html>
